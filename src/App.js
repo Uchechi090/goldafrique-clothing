@@ -47,10 +47,10 @@ class App extends Component {
                 ...snapshot.data()
               }
             },
-            () => {
-              //this console.log is here in case the setState is not done at the time
-              console.log(this.state);
-            }
+            // () => {
+            //   //this console.log is here in case the setState is not done at the time
+            //   console.log(this.state);
+            // }
           );
           //console.log(snapshot.data());
         });
