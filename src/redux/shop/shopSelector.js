@@ -9,16 +9,24 @@ import { createSelector } from "reselect";
 //   mens: 5
 // };
 
-const selectShop = state => state.shop;
+const selectShop = (state) => state.shop;
 
 export const selectCollections = createSelector(
   [selectShop],
-  shop => shop.collections
+  (shop) => shop.collections
 );
 
+// export const selectCollectionsForPreview = createSelector(
+//   [selectCollections],
+//   collections => Object.keys(collections).map(key => collections[key])
+// );
+
+//this is this way because data comes from firestore now and there can
+//be no null values
 export const selectCollectionsForPreview = createSelector(
   [selectCollections],
-  collections => Object.keys(collections).map(key => collections[key])
+  collections =>
+    collections ? Object.keys(collections).map((key) => collections[key]) : []
 );
 
 //NOTE: using the array method - find() is not efficient for large data because
@@ -27,11 +35,17 @@ export const selectCollectionsForPreview = createSelector(
 //Data Normalization. Hence we do not need the COLLECTION_ID_MAP object above
 //i.e. Storing lists of elements as objects instead of arrays
 
-export const selectCollection = collectionUrlParam =>
+// export const selectCollection = (collectionUrlParam) =>
+//   createSelector(
+//     [selectCollections],
+//     (collections) => collections[collectionUrlParam]
+//     // collections.find(
+//     //   collection => collection.id === COLLECTION_ID_MAP[collectionUrlParam]
+//     // )
+//   );
+
+export const selectCollection = (collectionUrlParam) =>
   createSelector(
     [selectCollections],
-    collections => collections[collectionUrlParam]
-    // collections.find(
-    //   collection => collection.id === COLLECTION_ID_MAP[collectionUrlParam]
-    // )
+    (collections) => (collections ? collections[collectionUrlParam] : null)
   );

@@ -9,9 +9,14 @@ import Header from "./components/header/Header";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/SignInAndSignUpPage";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 
-import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import {
+  auth,
+  createUserProfileDocument,
+  //addCollectionAndDocuments,
+} from "./firebase/firebase.utils";
 import { setCurrentUser } from "./redux/user/userActions";
 import { selectCurrentUser } from "./redux/user/userSelector";
+//import { selectCollectionsForPreview } from "./redux/shop/shopSelector";
 
 import "./App.css";
 
@@ -29,15 +34,18 @@ class App extends Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const { setCurrentUser } = this.props;
+    const {
+      setCurrentUser,
+      //collectionsArray
+    } = this.props;
 
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       //this.setState({ currentUser: user });
       //createUserProfileDocument(user);
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
 
-        userRef.onSnapshot(snapshot => {
+        userRef.onSnapshot((snapshot) => {
           // this.setState(
           //   {
           //     currentUser: {
@@ -49,8 +57,8 @@ class App extends Component {
             {
               currentUser: {
                 id: snapshot.id,
-                ...snapshot.data()
-              }
+                ...snapshot.data(),
+              },
             }
             // () => {
             //   //this console.log is here in case the setState is not done at the time
@@ -64,6 +72,12 @@ class App extends Component {
       setCurrentUser(userAuth);
 
       //console.log(user);
+
+      //Removed because I needed it once
+      // addCollectionAndDocuments(
+      //   "collections",
+      //   collectionsArray.map(({ title, items }) => ({ title, items })) //to keep propeties I want(excluding some e.g. routeName)
+      // ); //added the collectionKey and collectionsArray
     });
   }
 
@@ -101,12 +115,13 @@ class App extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  //collectionsArray: selectCollectionsForPreview,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   //dispatch is used to send an object to an action that needs it
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App); //connect takes to args: mapStateToProps & mapDispatchToProps
