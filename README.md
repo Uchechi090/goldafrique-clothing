@@ -1,3 +1,9 @@
+A live preview of the application can be found at https://goldafrique-live.herokuapp.com/.
+
+The following tools were used for the creation of the application: React.js, Redux, Firebase, Integration with Stripe API, SCSS, Styled Components and deployed on Heroku.
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
