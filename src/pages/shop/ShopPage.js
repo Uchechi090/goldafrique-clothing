@@ -29,20 +29,37 @@ class ShopPage extends React.Component {
     const { updateCollections } = this.props;
     const collectionRef = firestore.collection("collections");
 
-    this.unsubscribeFromSnapshot = collectionRef.onSnapshot(
-      async (snapshot) => {
-        // console.log(snapshot);
-        const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-        //console.log(collectionsMap);
-        updateCollections(collectionsMap);
-        this.setState({ loading: false });
-      }
-    );
+    //Observable/Observer pattern - live update stream style
+    // this.unsubscribeFromSnapshot = collectionRef.onSnapshot(
+    //   async (snapshot) => {
+    //     // console.log(snapshot);
+    //     const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+    //     //console.log(collectionsMap);
+    //     updateCollections(collectionsMap);
+    //     this.setState({ loading: false });
+    //   }
+    // );
+
+    //Promise Pattern - chain style
+    collectionRef.get().then((snapshot) => {
+      // console.log(snapshot);
+      const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+      //console.log(collectionsMap);
+      updateCollections(collectionsMap);
+      this.setState({ loading: false });
+    });
+
+    //Using traditional fetch
+    // fetch(
+    //   "https://firestore.googleapis.com/v1/projects/gold-afrique-db/databases/(default)/documents/collections"
+    // )
+    //   .then((response) => response.json())
+    //   .then((collections) => console.log(collections));
   }
 
   render() {
     const { match } = this.props;
-    const {loading} = this.state
+    const { loading } = this.state;
 
     return (
       <div className="shop-page">
@@ -57,7 +74,9 @@ class ShopPage extends React.Component {
         <Route
           path={`${match.path}/:collectionId`}
           //component={CollectionPage}   same here
-          render={props => (<CollectionPageWithSpinner isLoading={loading} {...props} />)}
+          render={(props) => (
+            <CollectionPageWithSpinner isLoading={loading} {...props} />
+          )}
         />
       </div>
     );
